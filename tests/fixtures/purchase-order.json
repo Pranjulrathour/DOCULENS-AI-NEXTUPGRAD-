@@ -1,0 +1,18 @@
+{
+  "documentType": "purchase_order",
+  "confidence": 0.96,
+  "poNumber": "PO-5001",
+  "poDate": "2026-07-25",
+  "vendor": { "name": "ABC Technologies", "address": null, "taxId": null },
+  "buyer": { "name": null, "address": null, "taxId": null },
+  "currency": "INR",
+  "lineItems": [
+    { "description": "Laptop Stand", "quantity": 10, "unitPrice": 5000, "taxRate": 18, "taxAmount": 9000, "total": 59000 }
+  ],
+  "subtotal": 50000,
+  "taxAmount": 9000,
+  "totalAmount": 59000,
+  "deliveryDate": "2026-08-10",
+  "paymentTerms": "Net 30",
+  "missingFields": []
+}

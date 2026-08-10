@@ -1,0 +1,21 @@
+{
+  "documentType": "invoice",
+  "confidence": 0.95,
+  "invoiceNumber": "INV-1002",
+  "invoiceDate": "2026-08-02",
+  "dueDate": "2026-09-01",
+  "vendor": { "name": "ABC Technologies", "address": null, "taxId": null, "email": null, "phone": null },
+  "buyer": { "name": null, "address": null, "taxId": null },
+  "purchaseOrderNumber": "PO-5001",
+  "currency": "INR",
+  "lineItems": [
+    { "description": "Laptop Stand", "quantity": 12, "unitPrice": 5000, "taxRate": 18, "taxAmount": 10800, "total": 70800 }
+  ],
+  "subtotal": 60000,
+  "taxAmount": 10800,
+  "discount": null,
+  "totalAmount": 70800,
+  "paymentTerms": "Net 60",
+  "bankDetails": null,
+  "missingFields": []
+}

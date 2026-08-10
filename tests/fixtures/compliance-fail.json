@@ -1,0 +1,9 @@
+{
+  "documentText": "Invoice INV-1002. Payment Terms: Net 60.",
+  "rules": [
+    "Payment terms must not exceed 30 days.",
+    "Invoice must contain a GST number.",
+    "Purchase order number must be present."
+  ],
+  "expectedStatuses": ["fail", "fail", "fail"]
+}

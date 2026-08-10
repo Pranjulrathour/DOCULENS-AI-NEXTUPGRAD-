@@ -1,0 +1,9 @@
+{
+  "documentText": "Invoice INV-1001. Payment Terms: Net 15. GST Number: 29ABCDE1234F1Z5. Purchase Order Number: PO-5001.",
+  "rules": [
+    "Payment terms must not exceed 30 days.",
+    "Invoice must contain a GST number.",
+    "Purchase order number must be present."
+  ],
+  "expectedStatuses": ["pass", "pass", "pass"]
+}
