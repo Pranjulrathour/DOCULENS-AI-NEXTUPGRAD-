@@ -1,0 +1,84 @@
+SEBI ANNUAL COMPLIANCE REPORT — PLAIN TEXT VERSION
+===================================================
+
+Company: NextUpgrad Web Solutions Pvt. Ltd.
+CIN: U72900HR2021PTC095678
+GSTIN: 06AANCP4769H1ZN
+PAN: AANCP4769H
+Compliance Period: Financial Year 2025-26 (April 2025 – March 2026)
+Submission Date: 10 August 2026
+Compliance Officer: Pranjul Rathour, GenAI Engineer
+
+SECTION 1: BOARD COMPOSITION
+-----------------------------
+Total Board Members: 7
+Independent Directors: 4 (57.1%) — meets SEBI LODR Regulation 17(1) requirement of min. 50%
+Woman Director: 1 (Ms. Kavitha Ramesh) — satisfies Regulation 17(1)(a)
+Executive Directors: 3 (including MD & CEO)
+Board Meetings Held: 6 (quorum met in all meetings)
+
+SECTION 2: AUDIT COMMITTEE
+---------------------------
+Composition: 4 members (3 Independent, 1 Executive)
+Chairperson: Mr. Rajiv Sharma (Independent Director)
+Meetings Held: 8
+All members financially literate; 2 have accounting expertise (Regulation 18)
+
+SECTION 3: RELATED PARTY TRANSACTIONS (RPT)
+--------------------------------------------
+All RPTs conducted at arm's length and approved by Audit Committee.
+Material RPTs approved by shareholders at AGM (15 September 2025).
+RPT Policy reviewed and updated: 01 April 2025.
+
+Key RPTs during FY26:
+- Transaction with CloudMind Technologies Pvt. Ltd. (KMP entity): ₹45 Lakhs — IT Services
+- Lease of office space from Director (Mr. Anil Kumar): ₹18 Lakhs per annum
+- No RPT exceeding 10% of turnover (threshold under Regulation 23)
+
+SECTION 4: DISCLOSURE REQUIREMENTS
+------------------------------------
+Insider Trading Policy: Compliant with SEBI (PIT) Regulations 2015 — last updated 01 Jun 2025
+Whistle Blower Policy: Active; 3 complaints received, 3 resolved during FY26
+Business Responsibility & Sustainability Report (BRSR): Submitted — June 2026
+Annual Report: Dispatched to all shareholders — 30 September 2025
+
+SECTION 5: FINANCIAL COMPLIANCE
+---------------------------------
+Quarterly Results Filed (Reg 33):
+  Q1 FY26: Filed 14 August 2025 (within 45-day window) — COMPLIANT
+  Q2 FY26: Filed 12 November 2025 — COMPLIANT
+  Q3 FY26: Filed 13 February 2026 — COMPLIANT
+  Q4 FY26: Filed 28 May 2026 — COMPLIANT
+
+Payment Terms Compliance: All vendor payments made within 45 days as per MSMED Act.
+GST Returns: Filed monthly (GSTR-1 and GSTR-3B) — zero late filings in FY26.
+
+SECTION 6: STOCK EXCHANGE FILINGS
+------------------------------------
+Exchange: BSE (Scrip: 542985), NSE (NEXTUPGRAD)
+Price Sensitive Information disclosures: 7 during FY26, all filed within 24 hours.
+Shareholding Pattern: Filed within 21 days of quarter end (all 4 quarters).
+Corporate Governance Report: Filed with Q2 and Q4 results.
+
+SECTION 7: PENALTIES & REGULATORY ACTIONS
+--------------------------------------------
+Penalties Imposed: NIL
+Regulatory Notices/Show Cause: NIL
+Litigation Pending: 2 labour disputes (value: ₹12 Lakhs) — classified as contingent liability
+
+SECTION 8: COMPLIANCE CERTIFICATION
+--------------------------------------
+I hereby certify that to the best of my knowledge and belief, the company has complied
+with all the provisions of the SEBI (Listing Obligations and Disclosure Requirements)
+Regulations 2015 for the Financial Year 2025-26.
+
+Compliance Officer: Pranjul Rathour
+Designation: GenAI Engineer & Compliance Officer
+Organisation: NextUpgrad Web Solutions Pvt. Ltd.
+Date: 10 August 2026
+Phone: +91 124 456 7890
+Email: compliance@nextupgrad.in
+
+---
+This document is a plain-text version of the SEBI Annual Compliance Report.
+For the official signed copy, refer to the PDF filed on the BSE/NSE portal.
