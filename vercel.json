@@ -1,0 +1,23 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "regions": ["bom1"],
+  "functions": {
+    "app/api/analyze/route.ts":    { "maxDuration": 60 },
+    "app/api/compare/route.ts":    { "maxDuration": 60 },
+    "app/api/compliance/route.ts": { "maxDuration": 60 },
+    "app/api/summarize/route.ts":  { "maxDuration": 60 }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options",        "value": "DENY" },
+        { "key": "Referrer-Policy",        "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { UploadCloud, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ACCEPTED_EXTENSIONS = ".pdf,.png,.jpg,.jpeg,.webp,.docx,.xlsx,.txt";
-const ACCEPTED_LABEL = "PDF, DOCX, XLSX, JPG, PNG, WEBP, TXT";
+const ACCEPTED_LABEL = "PDF · DOCX · XLSX · JPG · PNG · WEBP · TXT";
 
 interface DropzoneProps {
   onFileSelected: (file: File) => void;
@@ -31,7 +31,7 @@ export function Dropzone({ onFileSelected, disabled, label = "Drop your document
   return (
     <div
       role="button"
-      tabIndex={0}
+      tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled}
       onClick={() => !disabled && inputRef.current?.click()}
       onKeyDown={(e) => {
@@ -44,22 +44,43 @@ export function Dropzone({ onFileSelected, disabled, label = "Drop your document
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
       className={cn(
-        "flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-16 text-center transition-colors",
-        isDragging ? "border-primary bg-accent" : "border-border bg-card hover:border-primary/50",
-        disabled && "cursor-not-allowed opacity-60",
+        "group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed px-8 py-14 text-center transition-all duration-200",
+        isDragging
+          ? "border-primary bg-primary/5 scale-[1.01]"
+          : "border-border bg-card hover:border-primary/40 hover:bg-primary/3",
+        disabled && "cursor-not-allowed opacity-50 pointer-events-none",
       )}
     >
-      <div className="flex size-14 items-center justify-center rounded-full bg-accent">
+      {/* Animated upload icon */}
+      <div
+        className={cn(
+          "relative flex size-16 items-center justify-center rounded-2xl transition-all duration-200",
+          isDragging ? "gradient-brand shadow-ai scale-110" : "bg-muted group-hover:bg-primary/10"
+        )}
+      >
         {isDragging ? (
-          <FileText className="size-7 text-primary" aria-hidden="true" />
+          <FileText className="size-8 text-white" aria-hidden="true" />
         ) : (
-          <UploadCloud className="size-7 text-primary" aria-hidden="true" />
+          <UploadCloud className={cn("size-8 transition-colors", "text-muted-foreground group-hover:text-primary")} aria-hidden="true" />
         )}
       </div>
-      <div className="space-y-1">
-        <p className="text-sm font-medium text-foreground">{label}</p>
-        <p className="text-xs text-muted-foreground">or browse files — {ACCEPTED_LABEL}</p>
+
+      {/* Text */}
+      <div className="space-y-1.5">
+        <p className="text-base font-bold text-foreground">
+          {isDragging ? "Release to upload" : label}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          or{" "}
+          <span className="text-primary font-semibold underline decoration-dashed underline-offset-2">
+            browse files
+          </span>
+        </p>
+        <p className="text-xs text-muted-foreground/70 mt-1">
+          {ACCEPTED_LABEL}
+        </p>
       </div>
+
       <input
         ref={inputRef}
         type="file"

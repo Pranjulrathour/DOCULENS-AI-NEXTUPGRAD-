@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { FileSearch, RotateCcw } from "lucide-react";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { AppShell } from "@/components/layout/app-shell";
 import { Dropzone } from "@/components/upload/dropzone";
 import { ProcessingStages } from "@/components/upload/processing-stages";
 import { ErrorState } from "@/components/common/error-state";
@@ -32,60 +31,64 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">Analyze a Document</h1>
-              <p className="text-sm text-muted-foreground">
-                Upload an invoice, purchase order, contract, or regulatory filing.
-              </p>
-            </div>
-            {state === "success" && (
-              <Button variant="outline" size="sm" onClick={handleReset}>
-                <RotateCcw className="size-4" /> Analyze Another
-              </Button>
-            )}
+    <AppShell>
+      <div className="px-4 sm:px-6 py-7 max-w-6xl mx-auto">
+        {/* Page header */}
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
+              Analyze a Document
+            </h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              Upload an invoice, purchase order, contract, or regulatory filing.
+            </p>
           </div>
-
-          {state === "idle" && <Dropzone onFileSelected={handleFileSelected} />}
-
-          {state === "busy" && <ProcessingStages />}
-
-          {state === "error" && (
-            <ErrorState
-              title="Analysis couldn't be completed"
-              description={error?.message ?? "Something went wrong."}
-              onRetry={file ? () => void analyze(file) : undefined}
-            />
-          )}
-
-          {state === "success" && result && file && (
-            <FadeIn className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="lg:h-[calc(100vh-220px)]">
-                <DocumentPreview file={file} extractedText={result.documentText} />
-              </div>
-              <div className="space-y-6">
-                <ClassificationCard classification={result.classification} />
-                <SummaryCard bullets={result.summary.bullets} />
-                {result.extraction ? (
-                  <ExtractionSection extraction={result.extraction} />
-                ) : (
-                  <EmptyState
-                    icon={FileSearch}
-                    title="No structured extraction for this document type"
-                    description="Structured field extraction is available for invoices, purchase orders, contracts, and regulatory filings."
-                  />
-                )}
-                <IssuesSection issues={result.issues} />
-              </div>
-            </FadeIn>
+          {state === "success" && (
+            <Button variant="outline" size="sm" onClick={handleReset} className="flex-shrink-0">
+              <RotateCcw className="size-3.5" />
+              Analyze Another
+            </Button>
           )}
         </div>
-      </main>
-      <SiteFooter />
-    </div>
+
+        {/* States */}
+        {state === "idle" && <Dropzone onFileSelected={handleFileSelected} />}
+
+        {state === "busy" && <ProcessingStages />}
+
+        {state === "error" && (
+          <ErrorState
+            title="Analysis couldn't be completed"
+            description={error?.message ?? "Something went wrong."}
+            onRetry={file ? () => void analyze(file) : undefined}
+          />
+        )}
+
+        {state === "success" && result && file && (
+          <FadeIn className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {/* Left — document preview */}
+            <div className="lg:h-[calc(100vh-180px)] lg:sticky lg:top-7">
+              <DocumentPreview file={file} extractedText={result.documentText} />
+            </div>
+
+            {/* Right — extraction results */}
+            <div className="space-y-4">
+              <ClassificationCard classification={result.classification} />
+              <SummaryCard bullets={result.summary.bullets} />
+              {result.extraction ? (
+                <ExtractionSection extraction={result.extraction} />
+              ) : (
+                <EmptyState
+                  icon={FileSearch}
+                  title="No structured extraction for this type"
+                  description="Structured field extraction is available for invoices, purchase orders, contracts, and regulatory filings."
+                />
+              )}
+              <IssuesSection issues={result.issues} />
+            </div>
+          </FadeIn>
+        )}
+      </div>
+    </AppShell>
   );
 }
