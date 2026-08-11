@@ -53,8 +53,10 @@ export async function extractPdf(buffer: Buffer): Promise<PdfExtractionResult> {
   try {
     result = await pdfParse(buffer);
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[PDF_PARSE_DEBUG]", msg, error instanceof Error ? error.stack : "");
     throw new AppError("PDF_PARSE_FAILED", {
-      internalMessage: error instanceof Error ? error.message : String(error),
+      internalMessage: msg,
       cause: error,
     });
   }
