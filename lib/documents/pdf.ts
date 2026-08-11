@@ -4,23 +4,23 @@ import type { DocumentPage } from "@/types/document";
 /** Below this average chars/page, a PDF is treated as scanned/image-based (PRD §15 Path B). */
 const MIN_CHARS_PER_PAGE_FOR_TEXT_PATH = 20;
 
-// pdfjs-dist v5 is an ESM-only package bundled by Next.js (not external).
-// In a serverless Node.js environment there is no browser Worker API, so we
-// set workerSrc to empty string once per cold start — this engages pdfjs's
-// built-in in-process fake-worker path, which is fully supported in Node.js.
-let _pdfjsWorkerConfigured = false;
-
-async function loadPdfDocument(buffer: Buffer) {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-
-  if (!_pdfjsWorkerConfigured) {
-    pdfjs.GlobalWorkerOptions.workerSrc = "";
-    _pdfjsWorkerConfigured = true;
-  }
-
-  const data = new Uint8Array(buffer);
-  return pdfjs.getDocument({ data, isEvalSupported: false, disableFontFace: true }).promise;
+// pdf-parse is a CJS module kept external in serverExternalPackages.
+// TypeScript's ESM type shim for pdf-parse has no default export, so we
+// load it via require() and type it inline to avoid TS2613/TS1192 errors.
+interface PdfParseResult {
+  numpages: number;
+  text: string;
 }
+interface PdfParseOptions {
+  pagerender?: (pageData: {
+    getTextContent: () => Promise<{ items: Array<{ str?: string }> }>;
+  }) => Promise<string>;
+}
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdfParse = require("pdf-parse") as (
+  buf: Buffer,
+  opts?: PdfParseOptions,
+) => Promise<PdfParseResult>;
 
 export interface PdfExtractionResult {
   pages: DocumentPage[];
@@ -28,37 +28,34 @@ export interface PdfExtractionResult {
   requiresOcr: boolean;
 }
 
-async function extractTextPerPage(
-  pdf: Awaited<ReturnType<typeof loadPdfDocument>>,
-): Promise<DocumentPage[]> {
-  const pages: DocumentPage[] = [];
-  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-    const page = await pdf.getPage(pageNumber);
-    const textContent = await page.getTextContent();
-    const text = textContent.items
-      .map((item) => ("str" in item ? item.str : ""))
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const viewport = page.getViewport({ scale: 1 });
-    pages.push({ pageNumber, text, width: viewport.width, height: viewport.height });
-  }
-  return pages;
-}
-
 /**
  * Only Path A (text-based PDFs) is supported. Rasterizing scanned PDF pages
  * server-side for OCR requires a native canvas implementation; the only
- * available option in this environment (@napi-rs/canvas driving pdf.js's
- * render()) crashes the Node process at the native layer on certain pages
- * rather than throwing a catchable error — unacceptable in production.
- * Surfacing a clear, honest error here is preferable to a feature that can
- * take the whole server down (PRD Rule 4 — no fake functionality).
+ * available option in this environment crashes the Node process at the native
+ * layer on certain pages rather than throwing a catchable error — unacceptable
+ * in production. Surfacing a clear, honest error here is preferable to a
+ * feature that can take the whole server down (PRD Rule 4 — no fake functionality).
  */
 export async function extractPdf(buffer: Buffer): Promise<PdfExtractionResult> {
-  let pdf: Awaited<ReturnType<typeof loadPdfDocument>>;
+  // pdf-parse bundles pdfjs-dist 2.x with Node.js shims applied — no
+  // GlobalWorkerOptions configuration is needed for serverless environments.
+  const pages: DocumentPage[] = [];
+
+  let result: PdfParseResult;
   try {
-    pdf = await loadPdfDocument(buffer);
+    result = await pdfParse(buffer, {
+      pagerender(pageData) {
+        return pageData.getTextContent().then((tc) => {
+          const text = tc.items
+            .map((item) => item.str ?? "")
+            .join(" ")
+            .replace(/\s+/g, " ")
+            .trim();
+          pages.push({ pageNumber: pages.length + 1, text });
+          return text;
+        });
+      },
+    });
   } catch (error) {
     throw new AppError("PDF_PARSE_FAILED", {
       internalMessage: error instanceof Error ? error.message : String(error),
@@ -66,18 +63,22 @@ export async function extractPdf(buffer: Buffer): Promise<PdfExtractionResult> {
     });
   }
 
-  const pages = await extractTextPerPage(pdf);
+  const pageCount = result.numpages || Math.max(pages.length, 1);
   const totalChars = pages.reduce((sum, p) => sum + (p.text?.length ?? 0), 0);
-  const requiresOcr = totalChars / Math.max(pages.length, 1) < MIN_CHARS_PER_PAGE_FOR_TEXT_PATH;
+  const requiresOcr = totalChars / pageCount < MIN_CHARS_PER_PAGE_FOR_TEXT_PATH;
 
   if (requiresOcr) {
     throw new AppError("OCR_FAILED", {
       userMessage:
         "This PDF appears to be scanned or image-based. Scanned-PDF OCR isn't supported yet in this MVP — please upload the page as an image (PNG/JPG) instead.",
-      internalMessage: `PDF has ${pages.length} pages with only ${totalChars} extractable characters; scanned-PDF rasterization is disabled (unstable native renderer).`,
+      internalMessage: `PDF has ${pageCount} pages with only ${totalChars} extractable characters; scanned-PDF rasterization is disabled (unstable native renderer).`,
     });
   }
 
-  const fullText = pages.map((p) => `[Page ${p.pageNumber}]\n${p.text ?? ""}`).join("\n\n");
+  const fullText =
+    pages.length > 0
+      ? pages.map((p) => `[Page ${p.pageNumber}]\n${p.text ?? ""}`).join("\n\n")
+      : result.text;
+
   return { pages, fullText, requiresOcr: false };
 }
