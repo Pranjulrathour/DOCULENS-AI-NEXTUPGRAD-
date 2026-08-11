@@ -4,14 +4,22 @@ import type { DocumentPage } from "@/types/document";
 /** Below this average chars/page, a PDF is treated as scanned/image-based (PRD §15 Path B). */
 const MIN_CHARS_PER_PAGE_FOR_TEXT_PATH = 20;
 
+// pdfjs-dist v5 is an ESM-only package bundled by Next.js (not external).
+// In a serverless Node.js environment there is no browser Worker API, so we
+// set workerSrc to empty string once per cold start — this engages pdfjs's
+// built-in in-process fake-worker path, which is fully supported in Node.js.
+let _pdfjsWorkerConfigured = false;
+
 async function loadPdfDocument(buffer: Buffer) {
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+
+  if (!_pdfjsWorkerConfigured) {
+    pdfjs.GlobalWorkerOptions.workerSrc = "";
+    _pdfjsWorkerConfigured = true;
+  }
+
   const data = new Uint8Array(buffer);
-  // pdf.js logs a harmless "standardFontDataUrl not provided" warning here
-  // since we never call render() — text extraction (getTextContent) doesn't
-  // need font data, and pointing it at a real path breaks under Turbopack's
-  // externalized-package resolution, so the warning is left as-is.
-  return pdfjs.getDocument({ data, isEvalSupported: false }).promise;
+  return pdfjs.getDocument({ data, isEvalSupported: false, disableFontFace: true }).promise;
 }
 
 export interface PdfExtractionResult {
